@@ -61,7 +61,11 @@ Route::prefix('/admin')
         Route::post('/', 'PostsController@store')->name('posts.store');
         Route::get('/{id}/edit', 'PostsController@edit')->name('posts.edit');
         Route::put('/{id}', 'PostsController@update')->name('posts.update');
-        Route::delete('/{id}/delete', 'PostsController@destory')->name('posts.destory');
+        Route::delete('/{id}/delete', 'PostsController@destroy')->name('posts.destroy');
+
+        Route::get('/trash', 'PostsController@trash')->name('posts.trash');
+        Route::put('/trash/{id}/restore', 'PostsController@restore')->name('posts.restore');
+        Route::delete('/trash/{id}', 'PostsController@forceDelete')->name('posts.forceDelete');
     });
     
 

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Post;
+use Illuminate\Support\Facades\Storage;
 
 class PostsController extends Controller
 {
@@ -14,7 +15,7 @@ class PostsController extends Controller
     {
         return view('admin.posts.index', [
             //'posts' => DB::table('posts')->get(),
-            'posts' => Post::get(),
+            'posts' => Post::withTrashed()->get(),
         ]);
     }
 
@@ -25,11 +26,29 @@ class PostsController extends Controller
 
     public function store(Request $request)
     {
+        $request->validate([
+            'title' => 'required|max:255|min:10',
+            'content' => 'required|string',
+            'category_id' => 'required|int',
+            'status' => 'required|in:draft,published',
+            'image' => 'image'
+        ]);
+
+        $image = null;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image')->store('images', 'public');
+        }
+
+        $title = $request->input('title');
+        $slug = strtolower(preg_replace('#\s+#', '-', $title));
         //DB::table('posts')->insert([
         $post = Post::create([
-            'title' => $request->input('title'),
+            'title' => $title,
             'content' => $request->input('content'),
-            'slug' => '',
+            'slug' => $slug,
+            'category_id' => $request->input('category_id'),
+            'status' => $request->input('status'),
+            'image' => $image,
             //'created_at' => now(),
             //'updated_at' => now(),
         ]);
@@ -82,7 +101,7 @@ class PostsController extends Controller
         return redirect()->route('posts.index')->with('message', $message);
     }
 
-    public function destory($id)
+    public function destroy($id)
     {
         //Post::where('id', $id)->delete();
 
@@ -95,5 +114,36 @@ class PostsController extends Controller
                                                //->with('error', 'Some error occured!');
 
         
+    }
+
+    public function trash()
+    {
+        return view('admin.posts.trash', [
+            'posts' => Post::onlyTrashed()->get(),
+        ]);
+    }
+
+    public function restore(Request $request, $id)
+    {
+        $post = Post::onlyTrashed()->findOrFail($id);
+        $post->restore();
+
+        $message = sprintf('Post "%s" restored successfully!', $post->title);
+        return redirect()->route('posts.trash')->with('message', $message);
+                                               //->with('error', 'Some error occured!');
+
+    }
+
+    public function forceDelete($id)
+    {
+        $post = Post::onlyTrashed()->findOrFail($id);
+
+        $post->forceDelete();
+        Storage::disk('public')->delete($post->image);
+
+        $message = sprintf('Post "%s" Deleted successfully!', $post->title);
+        return redirect()->route('posts.trash')->with('message', $message);
+                                               //->with('error', 'Some error occured!');
+
     }
 }

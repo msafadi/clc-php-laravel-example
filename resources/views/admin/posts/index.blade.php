@@ -2,7 +2,10 @@
 
 @section('content')
 
-<h2 class="my-5">{{ __('Posts') }}</h2>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h2>{{ __('Posts') }}</h2>
+    <a class="btn btn-outline-success btn-sm mb-2 mb-md-0" href="{{ route('posts.create') }}">{{ __('New') }}</a>
+</div>
 
 @if(session()->has('message'))
 <div class="alert alert-success">
@@ -31,11 +34,12 @@
             <td>{{ $post->title }}</td>
             <td>{{ $post->created_at }}</td>
             <td><a href="{{ route('posts.edit', [$post->id]) }}">Edit</a>
-            <form class="d-inline form-inline delete" action="{{ route('posts.destory', [$post->id]) }}" method="post">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-sm btn-link text-danger">Delete</button>
-            </form></td>
+                <form class="d-inline form-inline delete" action="{{ route('posts.destroy', [$post->id]) }}" method="post">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-sm btn-link text-danger">Delete</button>
+                </form>
+            </td>
         </tr>
         @endforeach
     </tbody>
@@ -46,12 +50,12 @@
 @section('scripts')
 
 <script>
-$('form.delete').on('submit', function(e) {
-    if (!window.confirm('Are you sure?')) {
-        e.preventDefault();
-    }
+    $('form.delete').on('submit', function(e) {
+        if (!window.confirm('Are you sure?')) {
+            e.preventDefault();
+        }
 
-});
+    });
 </script>
 
 @endsection

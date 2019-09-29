@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Category;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -15,7 +16,9 @@ class CategoriesController extends Controller
     public function index()
     {
         //
-        return __METHOD__;
+        return view('admin.categories.index', [
+            'categories' => Category::paginate(),
+        ]);
     }
 
     /**
@@ -26,7 +29,7 @@ class CategoriesController extends Controller
     public function create()
     {
         //
-        return __METHOD__;
+        return view('admin.categories.create');
     }
 
     /**
@@ -38,7 +41,16 @@ class CategoriesController extends Controller
     public function store(Request $request)
     {
         //
-        return __METHOD__;
+        $name = $request->post('name');
+        $slug = strtolower(preg_replace('/\s+/', '-', $name));
+        $category = Category::create([
+            'name' => $name,
+            'slug' => $slug,
+        ]);
+
+        return redirect()
+            ->route('categories.index')
+            ->with('message', "Category '{$category->name}' created!");
     }
 
     /**
@@ -50,7 +62,10 @@ class CategoriesController extends Controller
     public function show($id)
     {
         //
-        return __METHOD__;
+        $category = Category::findOrFail($id);
+        return view('admin.categories.view', [
+            'category' => $category,
+        ]);
     }
 
     /**
@@ -62,7 +77,10 @@ class CategoriesController extends Controller
     public function edit($id)
     {
         //
-        return __METHOD__;
+        $category = Category::findOrFail($id);
+        return view('admin.categories.edit', [
+            'category' => $category,
+        ]);
     }
 
     /**
@@ -75,7 +93,14 @@ class CategoriesController extends Controller
     public function update(Request $request, $id)
     {
         //
-        return __METHOD__;
+        $category = Category::findOrFail($id);
+        $category->update([
+            'name' => $request->post('name'),
+        ]);
+
+        return redirect()
+            ->route('categories.index')
+            ->with('message', "Category '{$category->name}' updated!");
     }
 
     /**
@@ -87,6 +112,10 @@ class CategoriesController extends Controller
     public function destroy($id)
     {
         //
-        return __METHOD__;
+        $category = Category::findOrFail($id);
+        $category->delete();
+        return redirect()
+            ->route('categories.index')
+            ->with('message', "Category '{$category->name}' deleted!");
     }
 }
