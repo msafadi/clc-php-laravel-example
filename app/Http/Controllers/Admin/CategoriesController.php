@@ -17,7 +17,7 @@ class CategoriesController extends Controller
     {
         //
         return view('admin.categories.index', [
-            'categories' => Category::paginate(),
+            'categories' => Category::with('posts')->get(),
         ]);
     }
 
@@ -117,5 +117,12 @@ class CategoriesController extends Controller
         return redirect()
             ->route('categories.index')
             ->with('message', "Category '{$category->name}' deleted!");
+    }
+
+    public function posts($id)
+    {
+        $category = Category::findOrFail($id);
+        //return \App\Post::where('category_id', $id)->get();
+        return $category->posts()->where('status', 'draft')->get();
     }
 }

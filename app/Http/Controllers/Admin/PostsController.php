@@ -13,9 +13,12 @@ class PostsController extends Controller
     //
     public function index()
     {
+        //$posts = Post::postsWithCategoryName();
+        //return $posts;
+
         return view('admin.posts.index', [
             //'posts' => DB::table('posts')->get(),
-            'posts' => Post::withTrashed()->get(),
+            'posts' => Post::with('category')->get(),
         ]);
     }
 
@@ -85,12 +88,31 @@ class PostsController extends Controller
 
     public function update(Request $request, $id)
     {
+        $request->validate([
+            'title' => 'required|max:255|min:10',
+            'content' => 'required|string',
+            'category_id' => 'required|int',
+            'status' => 'required|in:draft,published',
+            'image' => 'image'
+        ]);
+
         $post = Post::findOrFail($id);
+
+        $image = $post->image;
+        if ($request->hasFile('image')) {
+            $image = $request->file('image')->store('images', 'public');
+            if ($image) {
+                Storage::disk('public')->delete($post->image);
+            }
+        }
         
         //DB::table('posts')->where('id', $id)
         $post->update([
             'title' => $request->input('title'),
             'content' => $request->input('content'),
+            'category_id' => $request->input('category_id'),
+            'status' => $request->input('status'),
+            'image' => $image,
             //'updated_at' => now(),
         ]);
 
@@ -145,5 +167,12 @@ class PostsController extends Controller
         return redirect()->route('posts.trash')->with('message', $message);
                                                //->with('error', 'Some error occured!');
 
+    }
+
+    public function tags($id)
+    {
+        $post = Post::findOrFail($id);
+
+        return $post->tags;
     }
 }

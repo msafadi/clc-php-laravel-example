@@ -18,6 +18,7 @@
         <tr>
             <th>Id</th>
             <th>Name</th>
+            <th>Posts #</th>
             <th>Created At</th>
             <th></th>
         </tr>
@@ -27,6 +28,7 @@
         <tr>
             <td>{{ $category->id }}</td>
             <td>{{ $category->name }}</td>
+            <td>{{ $category->posts->count() }}</td>
             <td>{{ $category->created_at }}</td>
             <td><a href="{{ route('categories.edit', [$category->id]) }}">Edit</a>
             <form class="d-inline form-inline delete" action="{{ route('categories.destroy', [$category->id]) }}" method="post">

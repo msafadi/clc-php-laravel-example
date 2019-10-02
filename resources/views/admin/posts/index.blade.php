@@ -23,6 +23,7 @@
         <tr>
             <th>Id</th>
             <th>Title</th>
+            <th>Category</th>
             <th>Created At</th>
             <th></th>
         </tr>
@@ -32,6 +33,7 @@
         <tr>
             <td>{{ $post->id }}</td>
             <td>{{ $post->title }}</td>
+            <td>{{ $post->category->name }}</td>
             <td>{{ $post->created_at }}</td>
             <td><a href="{{ route('posts.edit', [$post->id]) }}">Edit</a>
                 <form class="d-inline form-inline delete" action="{{ route('posts.destroy', [$post->id]) }}" method="post">

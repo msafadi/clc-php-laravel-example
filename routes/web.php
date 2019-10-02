@@ -66,13 +66,30 @@ Route::prefix('/admin')
         Route::get('/trash', 'PostsController@trash')->name('posts.trash');
         Route::put('/trash/{id}/restore', 'PostsController@restore')->name('posts.restore');
         Route::delete('/trash/{id}', 'PostsController@forceDelete')->name('posts.forceDelete');
+    
+        Route::get('/{id}/tags', 'PostsController@tags')->name('posts.tags');
     });
+
+    Route::get('tags/{id}/posts', 'TagsController@posts')->name('tags.posts');
     
 
+    Route::get('/categories/{id}/posts', 'CategoriesController@posts')->name('categories.posts');
     Route::resource('/categories', 'CategoriesController')->names([
         //'index' => 'categories',
         //'store' => 'save',
     ]);
+});
+
+Route::get('users/{id}/address', function($id) {
+    $user = App\User::find($id);
+
+    return $user->address;
+});
+
+Route::get('addresses/{id}/user', function($id) {
+    $address = App\Address::where('user_id', $id)->first();
+
+    return $address->user;
 });
 
 
