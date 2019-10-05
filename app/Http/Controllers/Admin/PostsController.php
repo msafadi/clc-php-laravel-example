@@ -34,7 +34,8 @@ class PostsController extends Controller
             'content' => 'required|string',
             'category_id' => 'required|int',
             'status' => 'required|in:draft,published',
-            'image' => 'image'
+            'image' => 'image',
+            'tag_id' => 'array',
         ]);
 
         $image = null;
@@ -55,6 +56,8 @@ class PostsController extends Controller
             //'created_at' => now(),
             //'updated_at' => now(),
         ]);
+
+        $post->tags()->sync($request->input('tag_id'));
 
         /*$post = Post::create($request->except([
             'tag_id', '_token'
@@ -81,8 +84,10 @@ class PostsController extends Controller
         if (!$post) {
             abort(404);
         }*/
+
         return view('admin.posts.edit', [
             'post' => $post,
+            'post_tags' => $post->tags->pluck('id')->toArray(),
         ]);
     }
 
@@ -93,7 +98,8 @@ class PostsController extends Controller
             'content' => 'required|string',
             'category_id' => 'required|int',
             'status' => 'required|in:draft,published',
-            'image' => 'image'
+            'image' => 'image',
+            'tag_id' => 'array',
         ]);
 
         $post = Post::findOrFail($id);
@@ -115,6 +121,18 @@ class PostsController extends Controller
             'image' => $image,
             //'updated_at' => now(),
         ]);
+
+        $post->tags()->sync($request->input('tag_id'));
+
+        /*DB::table('posts_tags')->where('post_id', $post->id)->delete();
+        if ($request->has('tag_id')) {
+            foreach ($request->input('tag_id') as $tag_id) {
+                DB::table('posts_tags')->insert([
+                    'post_id' => $post->id,
+                    'tag_id' => $tag_id,
+                ]);
+            }
+        }*/
 
         // Another Method
         //Post::where('id', $id)->update($request->all());

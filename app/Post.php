@@ -32,6 +32,11 @@ class Post extends Model
         );
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public static function postsWithCategoryName()
     {
         return Post::join('categories', 'categories.id', '=', 'posts.category_id')

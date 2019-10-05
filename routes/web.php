@@ -35,7 +35,7 @@ Route::get('/hello/{name?}', function($name = 'World') {
 //Route::delete(); // DELETE
 
 Route::get('/posts', 'PostsController@index');
-Route::get('/posts/{id}', 'PostsController@view');
+Route::get('/posts/{slug}', 'PostsController@view')->name('post');
 
 
 /*Route::group([
@@ -79,6 +79,11 @@ Route::prefix('/admin')
         //'store' => 'save',
     ]);
 });
+
+Route::get('/posts/{id}/comments', 'CommentsController@index');
+Route::post('/posts/{id}/comments', 'CommentsController@store')->name('comments.store');
+
+Route::get('/uploads/{image}', 'ImagesController@index')->name('uploads');
 
 Route::get('users/{id}/address', function($id) {
     $user = App\User::find($id);

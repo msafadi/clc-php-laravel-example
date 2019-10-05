@@ -78,6 +78,20 @@
         </div>
     </div>
     <div class="form-group row">
+        <label for="" class="col-sm-2 col-form-label">{{ __('Tags') }}</label>
+        <div class="col-sm-10">
+            @foreach (App\Tag::all() as $tag)
+            <div class="form-check form-check-inline">
+                <input id="tag{{ $tag->id }}" class="form-check-input" type="checkbox" name="tag_id[]" value="{{ $tag->id }}" {{ in_array($tag->id, old('tag_id', []))? ' checked' : '' }}>
+                <label for="tag{{ $tag->id }}" class="form-check-label">{{ $tag->name }}</label>
+            </div>
+            @endforeach
+            @error('tag_id')
+            <p class="text-danger">{{ $message }}</p>
+            @enderror
+        </div>
+    </div>
+    <div class="form-group row">
         <div class="col-sm-10">
             <button class="btn btn-primary">{{ __('Save') }}</button>
         </div>

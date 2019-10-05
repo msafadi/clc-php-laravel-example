@@ -89,15 +89,15 @@
                 <div class="container">
                     <div class="row">
                         
-                            @forelse($data as $key => $post)
+                            @forelse($posts as $key => $post)
                             <div class="col-md-4 service-item">
                                 <div class="item-inner">
                                     <div class="image-fit">
-                                        <img src="{{ asset($post['image']) }}">
+                                        <img src="{{ asset('storage/' . $post->image) }}">
                                     </div>
                                     <div class="p-3">
-                                        <h4 class="my-3"><a href="/posts/{{ $key }}">{{ $post['title'] }}</a></h4>
-                                        <p>{{ $post['content'] }}</p>
+                                        <h4 class="my-3"><a href="/posts/{{ $post->slug }}">{{ $post->title }}</a></h4>
+                                        <p>{{ $post->content }}</p>
                                     </div>
                                 </div>
                             </div>
