@@ -10,7 +10,7 @@ class PostsController extends Controller
     //
     public function index()
     {
-        return view('home')->with([
+        return view('index')->with([
             'title' => 'My Laravel App',
             'posts' => Post::all(),
         ]);

@@ -34,7 +34,7 @@ Route::get('/hello/{name?}', function($name = 'World') {
 //Route::patch(); // PATCH
 //Route::delete(); // DELETE
 
-Route::get('/posts', 'PostsController@index');
+Route::get('/posts', 'PostsController@index')->name('posts');
 Route::get('/posts/{slug}', 'PostsController@view')->name('post');
 
 
@@ -52,6 +52,7 @@ Route::get('/posts/{slug}', 'PostsController@view')->name('post');
 
 Route::prefix('/admin')
     ->namespace('Admin')
+    ->middleware(['auth'])
     ->group(function() {
 
     Route::prefix('/posts')
@@ -99,3 +100,12 @@ Route::get('addresses/{id}/user', function($id) {
 
 
 
+
+Auth::routes([
+    'register' => true,
+    'verify' => true,
+]);
+
+Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/home2', 'HomeController@home')->name('home2');
+Route::get('/home3', 'HomeController@home3')->name('home3');
