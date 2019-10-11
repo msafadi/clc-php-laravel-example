@@ -52,7 +52,7 @@ Route::get('/posts/{slug}', 'PostsController@view')->name('post');
 
 Route::prefix('/admin')
     ->namespace('Admin')
-    ->middleware(['auth'])
+    ->middleware(['auth:admin'])
     ->group(function() {
 
     Route::prefix('/posts')
@@ -105,6 +105,19 @@ Auth::routes([
     'register' => true,
     'verify' => true,
 ]);
+
+Route::get('/logout', 'Auth\LoginController@logout');
+
+Route::get('/admin/login', 'Admin\Auth\LoginController@showLoginForm')->name('admin.loginForm');
+Route::post('/admin/login', 'Admin\Auth\LoginController@login')->name('admin.login');
+Route::get('/admin/logout', 'Admin\Auth\LoginController@logout')->name('admin.logout');
+
+Route::get('/admin/password/reset', 'Admin\Auth\ForgotPasswordController@showLinkRequestForm')->name('admin.resetLink');
+Route::post('/admin/password/reset', 'Admin\Auth\ForgotPasswordController@sendResetLinkEmail')->name('admin.sendLink');
+
+Route::get('/admin/password/reset/{token}', 'Admin\Auth\ResetPasswordController@showResetForm')->name('admin.resetForm');
+Route::post('/admin/password/update', 'Admin\Auth\ResetPasswordController@reset')->name('admin.reset');
+
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/home2', 'HomeController@home')->name('home2');

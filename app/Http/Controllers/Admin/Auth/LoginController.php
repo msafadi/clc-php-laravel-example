@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -27,12 +27,12 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/posts';
+    protected $redirectTo = '/admin/posts';
 
-    public function redirectTo()
+    /*public function redirectTo()
     {
-        return route('home');
-    }
+        return route('posts.index');
+    }*/
 
     /**
      * Create a new controller instance.
@@ -56,6 +56,11 @@ class LoginController extends Controller
         return 'username';
     }
 
+    public function guard()
+    {
+        return Auth::guard('admin');
+    }
+
     /**
      * Log the user out of the application.
      *
@@ -69,5 +74,15 @@ class LoginController extends Controller
         $request->session()->invalidate();
 
         return $this->loggedOut($request) ?: redirect('/home');
+    }
+
+    /**
+     * Show the application's login form.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showLoginForm()
+    {
+        return view('admin.auth.login');
     }
 }
