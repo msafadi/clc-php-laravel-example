@@ -47,6 +47,8 @@
     </tbody>
 </table>
 
+{{ $posts->links() }}
+
 @endsection
 
 @section('scripts')

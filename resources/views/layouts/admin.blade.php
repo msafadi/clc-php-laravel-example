@@ -16,7 +16,7 @@
   <input class="form-control form-control-dark" type="text" placeholder="Search" aria-label="Search">
   <ul class="navbar-nav col-md-2 px-3">
     <li class="nav-item text-nowrap">
-      <span class="text-white">{{ Auth::user()->name }}
+      <span class="text-white">{{ Auth::guard('admin')->user()->name }}
       (<a class="nav-link d-inline" href="{{ route('admin.logout') }}">
         Sign out</a>)</span>
     </li>

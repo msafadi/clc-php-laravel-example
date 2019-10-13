@@ -14,14 +14,14 @@ class CheckAdmin
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next)
+    public function handle($request, Closure $next, ...$types)
     {
         if (!Auth::check()) {
             return redirect()->route('login');
         }
 
         $user = Auth::user();
-        if ($user->type == 'user') {
+        if (!in_array($user->type, $types)) {
             //abort(403);
             return response('You are not Admin!!!');
         }

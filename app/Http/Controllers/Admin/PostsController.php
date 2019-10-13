@@ -20,12 +20,13 @@ class PostsController extends Controller
 
         return view('admin.posts.index', [
             //'posts' => DB::table('posts')->get(),
-            'posts' => Post::with('category')->get(),
+            'posts' => Post::with('category')->paginate(1),
         ]);
     }
 
     public function create()
     {
+        $this->authorize('create', Post::class);
         return view('admin.posts.create');
     }
 
@@ -55,6 +56,7 @@ class PostsController extends Controller
             'category_id' => $request->input('category_id'),
             'status' => $request->input('status'),
             'image' => $image,
+            'user_id' => Auth::guard('web')->id(),
             //'created_at' => now(),
             //'updated_at' => now(),
         ]);
@@ -87,6 +89,8 @@ class PostsController extends Controller
             abort(404);
         }*/
 
+        $this->authorize('update', $post);
+
         return view('admin.posts.edit', [
             'post' => $post,
             'post_tags' => $post->tags->pluck('id')->toArray(),
@@ -105,6 +109,8 @@ class PostsController extends Controller
         ]);
 
         $post = Post::findOrFail($id);
+
+        $this->authorize('update', $post);
 
         $image = $post->image;
         if ($request->hasFile('image')) {
@@ -149,6 +155,9 @@ class PostsController extends Controller
 
         // Another Method
         $post = Post::findOrFail($id);
+
+        $this->authorize('delete', $post);
+
         $post->delete();
 
         $message = sprintf('Post "%s" deleted successfully!', $post->title);
@@ -160,6 +169,8 @@ class PostsController extends Controller
 
     public function trash()
     {
+        $this->authorize('trash', Post::class);
+
         return view('admin.posts.trash', [
             'posts' => Post::onlyTrashed()->get(),
         ]);
@@ -168,6 +179,9 @@ class PostsController extends Controller
     public function restore(Request $request, $id)
     {
         $post = Post::onlyTrashed()->findOrFail($id);
+
+        $this->authorize('restore', $post);
+
         $post->restore();
 
         $message = sprintf('Post "%s" restored successfully!', $post->title);
@@ -180,6 +194,7 @@ class PostsController extends Controller
     {
         $post = Post::onlyTrashed()->findOrFail($id);
 
+        $this->authorize('force-delete', $post);
         $post->forceDelete();
         Storage::disk('public')->delete($post->image);
 

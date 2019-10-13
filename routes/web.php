@@ -52,7 +52,7 @@ Route::get('/posts/{slug}', 'PostsController@view')->name('post');
 
 Route::prefix('/admin')
     ->namespace('Admin')
-    ->middleware(['auth:admin'])
+    ->middleware(['auth:web,admin'])
     ->group(function() {
 
     Route::prefix('/posts')
