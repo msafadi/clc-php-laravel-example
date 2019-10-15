@@ -122,3 +122,5 @@ Route::post('/admin/password/update', 'Admin\Auth\ResetPasswordController@reset'
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/home2', 'HomeController@home')->name('home2');
 Route::get('/home3', 'HomeController@home3')->name('home3');
+
+Route::get('/{username?}', 'AccountController@profile');
