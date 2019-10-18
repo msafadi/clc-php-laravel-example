@@ -17,12 +17,17 @@ class Post extends Model
 
     public function category()
     {
-        return $this->belongsTo(Category::class, 'category_id', 'id');
+        return $this->belongsTo(Category::class, 'category_id', 'id')->withDefault([
+            'name' => 'Ucategorized',
+        ]);
     }
     
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id')->withDefault([
+            'name' => 'Anonymous',
+            'email' => 'sample@example.com'
+        ]);
     }
 
     public function tags()
@@ -37,9 +42,14 @@ class Post extends Model
         );
     }
 
-    public function comments()
+    /*public function comments()
     {
         return $this->hasMany(Comment::class);
+    }*/
+
+    public function comments()
+    {
+        return $this->morphMany(Comment::class, 'commentable');
     }
 
     public static function postsWithCategoryName()

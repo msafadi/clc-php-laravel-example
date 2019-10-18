@@ -16,7 +16,7 @@
   <input class="form-control form-control-dark" type="text" placeholder="Search" aria-label="Search">
   <ul class="navbar-nav col-md-2 px-3">
     <li class="nav-item text-nowrap">
-      <span class="text-white">{{ Auth::guard('admin')->user()->name }}
+      <span class="text-white">{{ Auth::user()->name }}
       (<a class="nav-link d-inline" href="{{ route('admin.logout') }}">
         Sign out</a>)</span>
     </li>
@@ -49,16 +49,20 @@
         </ul>
 
         <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-          <span>Saved reports</span>
+          <span>Languages</span>
           <a class="d-flex align-items-center text-muted" href="#">
             <span data-feather="plus-circle"></span>
           </a>
         </h6>
         <ul class="nav flex-column mb-2">
           <li class="nav-item">
-            <a class="nav-link" href="#">
+            <a class="nav-link" href="{{ route('change-locale', ['en']) }}">
               <span data-feather="file-text"></span>
-              Current month
+              English
+            </a>
+            <a class="nav-link" href="{{ route('change-locale', ['ar']) }}">
+              <span data-feather="file-text"></span>
+              Arabic
             </a>
           </li>
           

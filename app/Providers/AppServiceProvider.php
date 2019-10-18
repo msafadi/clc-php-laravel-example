@@ -5,6 +5,9 @@ namespace App\Providers;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 
+use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\App;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -24,7 +27,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+
+        
         //
+        Relation::morphMap([
+            'posts' => \App\Post::class,
+            'videos' => \App\Video::class,
+        ]);
+
         Paginator::defaultView('vendor.pagination.bootstrap-4');
         Paginator::defaultSimpleView('vendor.pagination.simple-bootstrap-4');
     }

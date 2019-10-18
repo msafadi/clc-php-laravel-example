@@ -20,7 +20,7 @@ class PostsController extends Controller
 
         return view('admin.posts.index', [
             //'posts' => DB::table('posts')->get(),
-            'posts' => Post::with('category')->paginate(1),
+            'posts' => Post::with('category')->paginate(5),
         ]);
     }
 
@@ -48,6 +48,11 @@ class PostsController extends Controller
 
         $title = $request->input('title');
         $slug = strtolower(preg_replace('#\s+#', '-', $title));
+
+        $count = Post::where('slug', $slug)->count();
+        if ($count > 0) {
+            $slug .= ('-' . $count + 1);
+        }
         //DB::table('posts')->insert([
         $post = Post::create([
             'title' => $title,

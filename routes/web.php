@@ -50,9 +50,9 @@ Route::get('/posts/{slug}', 'PostsController@view')->name('post');
     Route::delete('/{id}/delete', 'PostsController@destory');
 });*/
 
-Route::prefix('/admin')
+Route::prefix('admin')
     ->namespace('Admin')
-    ->middleware(['auth:web,admin'])
+    ->middleware(['auth:web,admin', 'set-locale'])
     ->group(function() {
 
     Route::prefix('/posts')
@@ -122,5 +122,28 @@ Route::post('/admin/password/update', 'Admin\Auth\ResetPasswordController@reset'
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/home2', 'HomeController@home')->name('home2');
 Route::get('/home3', 'HomeController@home3')->name('home3');
+
+Route::get('/video/{id}', function($id) {
+
+    $video = App\Video::findOrFail($id);
+    return $video->comments;
+});
+
+Route::get('/comments', function() {
+
+    $comments = App\Comment::all();
+    foreach ($comments as $comment) {
+        echo $comment->commentable;
+    }
+});
+
+Route::get('locale/{lang}', function($lang) {
+    session()->put('lang', $lang);
+    return redirect()->back();
+})->name('change-locale');
+
+Route::get('/welcome', function () {
+    return 'welcome' ;
+});
 
 Route::get('/{username?}', 'AccountController@profile');
