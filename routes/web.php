@@ -82,7 +82,7 @@ Route::prefix('admin')
 });
 
 Route::get('/posts/{id}/comments', 'CommentsController@index');
-Route::post('/posts/{id}/comments', 'CommentsController@store')->name('comments.store');
+Route::post('/posts/{id}/comments', 'CommentsController@store')->name('comments.store')->middleware('auth');
 
 Route::get('/uploads/{image}', 'ImagesController@index')->name('uploads');
 
@@ -145,5 +145,8 @@ Route::get('locale/{lang}', function($lang) {
 Route::get('/welcome', function () {
     return 'welcome' ;
 });
+
+Route::get('/notifications', 'NotificationsController@index');
+Route::get('/notifications/{id}', 'NotificationsController@read')->name('notifications.read');
 
 Route::get('/{username?}', 'AccountController@profile');

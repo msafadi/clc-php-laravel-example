@@ -22,7 +22,10 @@ Route::resource('/posts', 'Api\PostsController')->names([
     'store' => 'api.posts.store',
     'update' => 'api.posts.update',
     'destroy' => 'api.posts.destroy',
-]);
+])->middleware('auth:api');
 
 Route::view('/views/posts', 'api.posts.index');
 Route::view('/views/posts/form/{id?}', 'api.posts.form');
+
+Route::post('login', 'Api\LoginController@login');
+Route::post('logout', 'Api\LoginController@logout')->middleware('auth:api');

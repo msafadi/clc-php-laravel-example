@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Post;
 use App\Comment;
+use App\Notifications\CommentNotification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CommentsController extends Controller
 {
@@ -17,6 +19,7 @@ class CommentsController extends Controller
     public function store(Request $request, $post_id)
     {
         $post = Post::findOrFail($post_id);
+        $user = Auth::user();
 
         // Save without relation
         /*Comment::create([
@@ -26,7 +29,7 @@ class CommentsController extends Controller
         ]);*/
 
         $comment = new Comment([
-            'user_id' => 1,
+            'user_id' => $user->id,
             'comment' => $request->post('comment'),
         ]);
         //$comment->user_id = 1;
@@ -38,6 +41,9 @@ class CommentsController extends Controller
             'user_id' => 1,
             'comment' => $request->post('comment'),
         ]);*/
+
+        // Send Notification
+        $post->user->notify(new CommentNotification($post, $user));
 
         return redirect()->route('post', [$post->slug]);
     }
