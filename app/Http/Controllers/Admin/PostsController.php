@@ -4,10 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Notifications\CommentNotification;
 use Illuminate\Support\Facades\DB;
 use App\Post;
 //use Illuminate\Support\Facades\Auth;
 use Auth;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 class PostsController extends Controller
@@ -79,6 +81,14 @@ class PostsController extends Controller
         $post->slug = '';
         $post->save();*/
 
+        /*
+        $users = User::all();
+        Notification::send($users, new CommentNotification($post, Auth::user()));
+
+        Notification::route('mail', 'ahmed@example.com')
+                    ->notify(new CommentNotification($post, Auth::user()));
+        */
+        
         //return redirect(route('posts.index'))->with('message', 'Post created successfully!');
         $message = sprintf('Post "%s" created successfully!', $post->title);
         return redirect()->route('posts.index')->with('message', $message);

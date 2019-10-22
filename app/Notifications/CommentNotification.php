@@ -2,12 +2,14 @@
 
 namespace App\Notifications;
 
+use App\Channels\TweetSms;
 use App\Post;
 use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\NexmoMessage;
 
 class CommentNotification extends Notification
 {
@@ -38,7 +40,7 @@ class CommentNotification extends Notification
     public function via($notifiable)
     {
         //if ($notifiable->via_email) {
-        return ['database'];
+        return ['database'/*, TweetSms::class*/, 'broadcast'];
         //}
     }
 
@@ -58,13 +60,56 @@ class CommentNotification extends Notification
         );
 
         return (new MailMessage)
-                    ->line('Hello ' . $notifiable->name)
+                ->view('mails.notification', [
+                    'name' => $notifiable->name,
+                    'mail_message' => $message,
+                    'action_url' => $url,
+                    'action_text' => 'View Comment',
+                ]);
+                    /*->line('Hello ' . $notifiable->name)
                     ->line($message)
                     ->action('View Comment', $url)
-                    ->line('Thank you for using our application!');
+                    ->line('Thank you for using our application!');*/
     }
 
     public function toDatabase($notifiable)
+    {
+        $url = url(route('post', [ $this->post->slug ]));
+        $message = sprintf(
+            '%s has commented on your post "%s"',
+            $this->user->name,
+            $this->post->title
+        );
+
+        return [
+            'message' => $message,
+            'url' => $url,
+            //'user' => $this->user,
+        ];
+    }
+
+    public function toNexmo($notifiable)
+    {
+        $content = sprintf(
+            '%s has commented on your post',
+            $this->user->name
+        );
+
+        $message = new NexmoMessage();
+        $message->content($content);
+        return $message;
+    }
+
+    public function toTweetSms($notifiable)
+    {
+        $message = sprintf(
+            '%s has commented on your post',
+            $this->user->name
+        );
+        return $message;
+    }
+
+    public function toBroadcast($notifiable)
     {
         $url = url(route('post', [ $this->post->slug ]));
         $message = sprintf(

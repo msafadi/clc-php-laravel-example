@@ -46,4 +46,14 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(Post::class, 'user_id', 'id');
     }
+
+    public function routeNotificationForNexmo()
+    {
+        return $this->mobile;
+    }
+
+    public function routeNotificationForMail()
+    {
+        return $this->mail;
+    }
 }
