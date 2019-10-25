@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Channels\TweetSms;
 use App\Post;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -121,6 +122,7 @@ class CommentNotification extends Notification
         return [
             'message' => $message,
             'url' => $url,
+            'time' => (new Carbon())->diffForHumans(),
             //'user' => $this->user,
         ];
     }
